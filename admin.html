@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-left">
+        <h1>Metrics <span class="cyan">ADMIN</span></h1>
+    </div>
+
+    <div class="header-right">
+        <div class="welcome">
+            Welcome, <span id="userName">Loading...</span>
+        </div>
+
+        <div class="user-info">
+            <img id="userAvatar" src="https://via.placeholder.com/150" class="avatar">
+            <span class="role">ADMIN</span>
+        </div>
+
+        <button onclick="logout()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+</header>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul>
+            <li class="active" onclick="showSection('leads')"><i class="fas fa-users"></i> Leads</li>
+            <li onclick="showSection('appointments')"><i class="fas fa-calendar-check"></i> Appointments</li>
+            <li onclick="showSection('followups')"><i class="fas fa-check-circle"></i> Follow Ups</li>
+            <li onclick="showSection('deals')"><i class="fas fa-handshake"></i> Deals</li>
+            <li onclick="showSection('projects')"><i class="fas fa-tasks"></i> Projects</li>
+            <li onclick="showSection('team')"><i class="fas fa-user-group"></i> Team</li>
+            <li onclick="showSection('reports')"><i class="fas fa-chart-bar"></i> Reports</li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+<!-- LEADS SECTION (already theek tha) -->
+<div id="leads" class="section active">
+    <h2>All Leads</h2>
+    <input type="text" id="leadsSearch" placeholder="Search leads..." style="padding: 10px; margin: 10px 0; width: 300px; border: 1px solid #ccc; border-radius: 4px;" onkeyup="filterTable('leadsTable', 'leadsSearch')">
+    <table border="1" width="100%" style="border-collapse: collapse; text-align:center;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Company</th>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Email</th>
+                <th>Action Type</th>
+            </tr>
+        </thead>
+        <tbody id="leadsTable"></tbody>
+    </table>
+</div>
+
+<!-- APPOINTMENTS SECTION -->
+<div id="appointments" class="section">
+    <h2>Appointments</h2>
+    <input type="text" id="appointmentsSearch" placeholder="Search appointments..." style="padding: 10px; margin: 10px 0; width: 300px; border: 1px solid #ccc; border-radius: 4px;" onkeyup="filterTable('appointmentsTable', 'appointmentsSearch')">
+    <table border="1" width="100%" style="border-collapse: collapse; text-align:center;">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Assigned To</th>
+            </tr>
+        </thead>
+        <tbody id="appointmentsTable"></tbody>
+    </table>
+</div>
+
+<!-- FOLLOWUPS SECTION -->
+<div id="followups" class="section">
+    <h2>Follow Ups</h2>
+    <input type="text" id="followupsSearch" placeholder="Search followups..." style="padding: 10px; margin: 10px 0; width: 300px; border: 1px solid #ccc; border-radius: 4px;" onkeyup="filterTable('followupsTable', 'followupsSearch')">
+    <table border="1" width="100%" style="border-collapse: collapse; text-align:center;">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Client</th>
+                <th>Follow Date</th>
+                <th>Follow Time</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody id="followupsTable"></tbody>
+    </table>
+</div>
+
+<!-- DEALS SECTION -->
+<div id="deals" class="section">
+    <h2>Closed Deals</h2>
+
+    <div class="deal-bar-container">
+        <div class="deal-bar">
+            <div id="pendingBar" class="bar pending"></div>
+            <div id="receivedBar" class="bar received"></div>
+            <div id="failedBar" class="bar failed"></div>
+        </div>
+
+        <div class="deal-labels">
+            <span id="pendingLabel"></span>
+            <span id="receivedLabel"></span>
+            <span id="failedLabel"></span>
+        </div>
+    </div>
+
+    <input type="text" id="dealsSearch"
+        placeholder="Search deals..."
+        style="padding: 10px; margin: 10px 0; width: 300px; border: 1px solid #ccc; border-radius: 4px;"
+        onkeyup="filterTable('dealsTable', 'dealsSearch')">
+
+    <table border="1" width="100%" style="border-collapse: collapse; text-align:center;">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Client</th>
+                <th>Deal Amount</th>
+                <th>Payment Method</th>
+                <th>Payment Status</th>
+            </tr>
+        </thead>
+        <tbody id="dealsTable"></tbody>
+    </table>
+</div>
+
+<!-- PROJECTS SECTION -->
+<div id="projects" class="section">
+    <h2>Projects (Closed Deals)</h2>
+    <input type="text" id="projectsSearch" placeholder="Search projects..." style="padding: 10px; margin: 10px 0; width: 300px; border: 1px solid #ccc; border-radius: 4px;" onkeyup="filterTable('projectsTable', 'projectsSearch')">
+    <table border="1" width="100%" style="border-collapse: collapse; text-align:center;">
+        <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Client</th>
+                <th>Services</th>
+                <th>Status</th>
+                <th>Web</th>
+                <th>Seo</th>
+                <th>SMO</th>
+                <th>Ads</th>
+                <th>App</th>
+                <th>ERP/CRM</th>
+            </tr>
+        </thead>
+        <tbody id="projectsTable"></tbody>
+    </table>
+</div>
+
+<!-- TEAM SECTION (already theek hai) -->
+<div id="team" class="section">
+    <h2>Team Members</h2>
+    <input type="text" id="teamSearch" placeholder="Search team..." style="padding: 10px; margin: 10px 0; width: 300px; border: 1px solid #ccc; border-radius: 4px;" onkeyup="filterTable('teamTable', 'teamSearch')">
+
+    <!-- Role Tabs -->
+    <div class="role-tabs" style="margin: 20px 0;">
+        <button class="tab-btn active" data-role="all" onclick="filterTeamByRole('all')">All</button>
+        <button class="tab-btn" data-role="tme" onclick="filterTeamByRole('tme')">TME</button>
+        <button class="tab-btn" data-role="me" onclick="filterTeamByRole('me')">ME</button>
+        <button class="tab-btn" data-role="dev" onclick="filterTeamByRole('dev')">DEV</button>
+        <button class="tab-btn" data-role="SEO" onclick="filterTeamByRole('SEO')">SEO</button>
+        <button class="tab-btn" data-role="SMO" onclick="filterTeamByRole('SMO')">SMO</button>
+    </div>
+
+    <table border="1" width="100%" style="margin-top:10px; text-align:center; border-collapse:collapse;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Total Leads</th>
+                <th>Appointments</th>
+                <th>Followups</th>
+            </tr>
+        </thead>
+        <tbody id="teamTable"></tbody>
+    </table>
+</div>
+
+<!-- REPORTS SECTION -->
+<div id="reports" class="section">
+    <h2>Performance Reports</h2>
+    <div class="report-grid">
+        <div class="report-card">
+            <h3>Total Leads</h3>
+            <h2 id="reportTotalLeads">0</h2>
+        </div>
+        <div class="report-card">
+            <h3>Appointments</h3>
+            <h2 id="reportTotalAppointments">0</h2>
+        </div>
+        <div class="report-card">
+            <h3>Deals</h3>
+            <h2 id="reportTotalDeals">0</h2>
+        </div>
+    </div>
+    <div class="chart-container">
+        <canvas id="reportChart"></canvas>
+    </div>
+</div>
+<!-- Popup -->
+<div id="popup" class="popup hidden">
+    <div class="popup-content">
+        <i id="popupIcon"></i>
+        <h3 id="popupTitle"></h3>
+        <p id="popupMessage"></p>
+    </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEV Dashboard</title>
+
+    <link rel="stylesheet" href="dev.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-left">
+        <h1>Metrics <span class="cyan">DEV</span></h1>
+    </div>
+
+    <div class="header-right">
+        <div class="welcome">
+            Welcome, <span id="userName">Loading...</span>
+        </div>
+
+        <div class="user-info">
+            <img id="userAvatar" src="https://via.placeholder.com/150" class="avatar">
+            <span class="role">DEV</span>
+        </div>
+
+        <button onclick="logout()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+</header>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul>
+            <li class="active" onclick="showSection('assigned')">
+                <i class="fas fa-tasks"></i> Assigned Projects
+            </li>
+            <li onclick="showSection('ongoing')">
+                <i class="fas fa-spinner"></i> Ongoing Projects
+            </li>
+            <li onclick="showSection('completed')">
+                <i class="fas fa-check-circle"></i> Completed Projects
+            </li>
+            <li onclick="showSection('reports')">
+                <i class="fas fa-chart-bar"></i> Reports
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+        <div id="assigned" class="section active">
+            <h2>Assigned Projects</h2>
+            <div class="card-grid" id="assignedContainer">
+                <p class="loading">Loading assigned projects...</p>
+            </div>
+        </div>
+
+        <div id="ongoing" class="section">
+            <h2>Ongoing Projects</h2>
+            <div class="card-grid" id="ongoingContainer">
+                <p class="loading">Loading ongoing projects...</p>
+            </div>
+        </div>
+
+        <div id="completed" class="section">
+            <h2>Completed Projects</h2>
+            <div class="card-grid" id="completedContainer">
+                <p class="loading">Loading completed projects...</p>
+            </div>
+        </div>
+
+        <div id="reports" class="section">
+            <h2>Performance Reports</h2>
+
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3>Assigned</h3>
+                    <h2 id="totalAssigned">0</h2>
+                </div>
+
+                <div class="report-card">
+                    <h3>Ongoing</h3>
+                    <h2 id="totalOngoing">0</h2>
+                </div>
+
+                <div class="report-card">
+                    <h3>Completed</h3>
+                    <h2 id="totalCompleted">0</h2>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="reportChart"></canvas>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Popup -->
+<div id="popup" class="popup hidden">
+    <div class="popup-content">
+        <i id="popupIcon"></i>
+        <h3 id="popupTitle"></h3>
+        <p id="popupMessage"></p>
+    </div>
+</div>
+
+<script src="dev.js"></script>
+</body>
+</html>

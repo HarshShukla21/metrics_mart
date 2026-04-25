@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metrics | Register / Login</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="mp.css">
+</head>
+<body>
+
+  <!-- Register Form -->
+  <div id="registerForm">
+    <div class="main-container">
+      <div class="form-card">
+
+        <!-- Left Side -->
+        <div class="left-section">
+          <div class="left-content">
+            <h1 class="main-title">
+              <span class="cyan">Join</span> Metrics
+            </h1>
+            <p class="subtitle">Create your account and start managing with power</p>
+            
+            <div class="icon-container">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="right-section">
+          <div class="form-box">
+            <div class="form-header">
+              <h2>Create Account</h2>
+              <p>Please fill in the details below</p>
+            </div>
+
+            <!-- Yeh form ab AJAX se submit hoga -->
+            <form id="registerFormElement" enctype="multipart/form-data">
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>Full Name</label>
+                  <input type="text" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="input-group">
+                  <label>Profile Image</label>
+                  <div class="file-upload">
+                    <div class="avatar">👤</div>
+                    <input type="file" name="prof_img" accept="image/*">
+                  </div>
+                </div>
+
+                <div class="input-group">
+                  <label>Email Address</label>
+                  <input type="email" name="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="input-group">
+                  <label>Contact Number</label>
+                  <input type="tel" name="contact" placeholder="+91 98765 43210" required>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>Set Password</label>
+                  <input type="password" name="spswd" placeholder="••••••••" maxlength="8" required>
+                </div>
+
+                <div class="input-group">
+                  <label>Confirm Password</label>
+                  <input type="password" name="cpswd" placeholder="••••••••" maxlength="8" required>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>Role</label>
+                  <select name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="tme">TME</option>
+                    <option value="me">ME</option>
+                    <option value="dev">Developer</option>
+                    <option value="dm">Digital Marketer</option>
+                    <option value="SMO">Accountants</option>
+                  </select>
+                </div>  
+
+                <div class="input-group">
+                  <label>Company</label>
+                  <select name="comp_name" required>
+                    <option value="">Select Company</option>
+                    <option value="Metrics Mart Infoline Pvt Ltd">Metrics Mart Infoline Pvt Ltd</option>
+                    <option value="RedSea">RedSea</option>
+                  </select>
+                </div>
+
+                <div class="input-group skills-full">
+                  <label>Skills</label>
+                  <div class="checkbox-group">
+                    <label><input type="checkbox" name="skills[]" value="web"> Web</label>
+                    <label><input type="checkbox" name="skills[]" value="seo"> SEO</label>
+                    <label><input type="checkbox" name="skills[]" value="smo"> SMO</label>
+                    <label><input type="checkbox" name="skills[]" value="ads"> Ads</label>
+                    <label><input type="checkbox" name="skills[]" value="app"> App</label>
+                    <label><input type="checkbox" name="skills[]" value="erp_crm"> ERP/CRM</label>
+                  </div>
+                </div>
+
+              </div>
+
+              <button type="submit" class="submit-btn" id="registerBtn">
+                Create Account
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </form>
+
+            <div class="switch-text">
+              Already have an account? 
+              <span onclick="showLoginForm()" class="link">Login</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Form (Same as before) -->
+  <div id="loginForm" class="hidden">
+    <div class="main-container">
+      <div class="form-card login-only">
+
+        <div class="left-section">
+          <div class="left-content">
+            <h1 class="main-title">
+              <span class="cyan">Welcome</span> Back
+            </h1>
+            <p class="subtitle">Sign in to continue your work</p>
+            <div class="icon-container">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-section">
+          <div class="form-box">
+            <div class="form-header">
+              <h2>Login</h2>
+              <p>Enter your credentials</p>
+            </div>
+
+            <form id="loginFormElement">
+              <div class="input-group">
+                <label>Email or Contact</label>
+                <input type="text" name="emailOrContact" placeholder="Email or Phone Number" required>
+              </div>
+
+              <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+              </div>
+
+              <button type="submit" class="submit-btn">
+                Login
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </form>
+
+            <div class="switch-text">
+              Don't have an account? 
+              <span onclick="showRegisterForm()" class="link">Register</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup Message -->
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <i id="popupIcon" class="fas"></i>
+      <h3 id="popupTitle"></h3>
+      <p id="popupMessage"></p>
+      <button onclick="closePopup()" class="popup-btn">OK</button>
+    </div>
+  </div>
+  
+  <!------Follow up    -->
+          <div id="followupSection" class="hidden">
+            <h4>Follow Up Details</h4>
+            <div class="form-grid">
+              <input type="date" name="follow_date">
+              <input type="time" name="follow_time">
+              <input type="text" placeholder="Reason" name="reason" style="grid-column: span 2;">
+            </div>
+          </div>
+
+          <h3>Additional Notes</h3>
+          <textarea placeholder="Any additional notes about the lead..." name="additional_notes" rows="10"></textarea>
+
+          <div class="btn-group">
+            <button type="submit" class="save-btn">Save Lead</button>
+            <button type="button" onclick="closeLeadForm()" class="cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="mp.js"></script>
+</body>
+</html>

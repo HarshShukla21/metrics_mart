@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ME Dashboard</title>
+
+    <link rel="stylesheet" href="me.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-left">
+        <h1>Metrics <span class="cyan">ME</span></h1>
+    </div>
+
+    <div class="header-right">
+        <div class="welcome">Welcome, <span id="userName">Loading...</span></div>
+
+        <div class="user-info">
+            <img id="userAvatar" class="avatar">
+            <span class="role">ME</span>
+        </div>
+
+        <button onclick="logout()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+</header>
+
+<!-- DASHBOARD -->
+<div class="dashboard-container">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <ul>
+        <li class="active" onclick="showSection('appointments')">
+            <i class="fas fa-calendar-check"></i> Appointments
+        </li>
+        <li onclick="showSection('followups')">
+            <i class="fas fa-check-circle"></i> Follow Ups
+        </li>
+        <li onclick="showSection('deals')">
+            <i class="fas fa-handshake"></i> Deals
+        </li>
+        <li onclick="showSection('reports')">
+            <i class="fas fa-chart-bar"></i> Reports
+        </li>
+    </ul>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+
+    <!-- APPOINTMENTS -->
+    <div id="appointments" class="section active">
+        <h2>My Appointments</h2>
+        <div id="appointmentsContainer"></div>
+    </div>
+
+    <!-- FOLLOWUPS -->
+    <div id="followups" class="section">
+        <h2>Follow Ups</h2>
+        <div id="followupsContainer"></div>
+    </div>
+
+    <!-- DEALS -->
+    <div id="deals" class="section">
+        <h2>Deals</h2>
+        <div id="dealsContainer"></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="reports" class="section">
+        <h2>Performance Reports</h2>
+
+        <div class="report-grid">
+            <div class="report-card">
+                <h3>Appointments</h3>
+                <h2 id="totalAppointments">0</h2>
+            </div>
+
+            <div class="report-card">
+                <h3>Follow Ups</h3>
+                <h2 id="totalFollowups">0</h2>
+            </div>
+
+            <div class="report-card">
+                <h3>Deals</h3>
+                <h2 id="totalDeals">0</h2>
+            </div>
+        </div>
+
+        <!-- CIRCULAR CHART -->
+        <div class="chart-container">
+            <canvas id="reportChart"></canvas>
+        </div>
+    </div>
+  
+
+</main>
+</div>
+
+
+<!-- POPUP -->
+<div id="popup" class="popup hidden">
+    <div class="popup-content">
+        <i id="popupIcon"></i>
+        <h3 id="popupTitle"></h3>
+        <p id="popupMessage"></p>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div id="actionModal" class="modal hidden">
+    <div class="modal-content">
+
+        <span class="close-btn" onclick="closeModal()">✕</span>
+
+        <h2 id="modalLeadTitle">Client Action</h2>
+        <p id="modalLeadInfo" class="lead-info"></p>
+
+        <div id="actionButtons" class="action-buttons">
+            <button onclick="takeAction('not_interested')" class="btn btn-not">Not Interested</button>
+            <button onclick="takeAction('followup')" class="btn btn-follow">Follow Up</button>
+            <button onclick="takeAction('deal_closed')" class="btn btn-deal">Deal Closed</button>
+        </div>
+
+        <!-- FOLLOWUP -->
+        <div id="followupForm" class="action-form hidden">
+            <h3>Schedule Follow Up</h3>
+
+            <input type="date" id="followDate">
+            <input type="time" id="followTime">
+            <textarea id="followReason" placeholder="Reason"></textarea>
+
+            <button onclick="saveFollowUp()" class="btn btn-save">Save</button>
+        </div>
+
+        <!-- DEAL -->
+        <div id="dealClosedForm" class="action-form hidden">
+            <h3>Deal Closed</h3>
+
+            <input type="number" id="dealAmount" placeholder="Amount">
+
+            <select id="paymentMethod" onchange="showPaymentFields()">
+                <option value="">Select Payment Method</option>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="UPI / Net Banking">UPI / Net Banking</option>
+                <option value="Debit/Credit Card">Card</option>
+            </select>
+
+            <div id="dynamicPaymentFields"></div>
+
+            <textarea id="paymentNotes" placeholder="Notes"></textarea>
+
+            <button onclick="saveDealClosed()" class="btn btn-save">Save Deal</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="me.js"></script>
+</body>
+</html>
