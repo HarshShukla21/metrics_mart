@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     background: #ffffff;
     color: #111827;
     line-height: 1.6;
@@ -131,6 +131,7 @@ body {
     flex: 1;
     padding: 25px;
     background: #ffffff;
+    overflow-x: hidden;
 }
 
 .section {
@@ -141,7 +142,7 @@ body {
     display: block;
 }
 
-h2 {
+.section > h2 {
     color: #22d3ee;
     margin-bottom: 25px;
     font-size: 26px;
@@ -186,20 +187,29 @@ h2 {
     font-size: 32px;
     font-weight: 700;
 }
+
 .chart-container {
     width: 100%;
-    max-width: 400px;   /* 👈 control size */
-    height: 400px;      /* 👈 perfect circle */
-    margin: auto;
+    max-width: 400px;
+    height: 400px;
+    margin: 20px auto;
 }
 
 #reportChart {
     width: 100% !important;
     height: 100% !important;
 }
+
 /* DATA TABLE */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .data-table {
     width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
     margin-top: 15px;
     background: #ffffff;
@@ -262,11 +272,55 @@ h2 {
     border-radius: 12px;
     border: 1px solid #e2e8f0;
 }
-.chart-container {
+
+.grayed-out {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 400px;
-    height: 400px;
-    margin: 20px auto;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+.popup.hidden {
+    display: none !important;
+}
+
+.popup-content {
+    background: #ffffff;
+    border: 2px solid #22d3ee;
+    border-radius: 20px;
+    padding: 40px 50px;
+    text-align: center;
+    max-width: 380px;
+    box-shadow: 0 0 40px rgba(34, 211, 238, 0.3);
+}
+
+.popup-content i {
+    font-size: 60px;
+    margin-bottom: 15px;
+}
+
+.popup-content h3 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.popup-content p {
+    color: #475569;
+    font-size: 17px;
+    margin-bottom: 25px;
 }
 
 /* MODAL */
@@ -298,6 +352,13 @@ h2 {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     position: relative;
     border: 1px solid #22d3ee;
+}
+
+.modal-content h2 {
+    color: #111827;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 5px;
 }
 
 .close-btn {
@@ -393,20 +454,45 @@ h2 {
     font-weight: 500;
 }
 
+.required {
+    color: #ef4444;
+    font-weight: 700;
+}
+
 .hidden {
     display: none !important;
 }
 
+/* INVOICE ACTIONS */
+.invoice-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .btn-invoice {
     background: #0bb39c;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
 }
 
 .btn-whatsapp {
     background: #25D366;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
 }
 
 .btn-gmail {
     background: #ea4335;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
 }
 
 .btn-invoice:hover {
@@ -477,6 +563,11 @@ h2 {
         width: 100%;
         max-width: 180px;
     }
+
+    .chart-container {
+        max-width: 300px;
+        height: 300px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -492,5 +583,32 @@ h2 {
     .modal-content {
         width: 95%;
         padding: 20px 18px;
+    }
+
+    .section > h2 {
+        font-size: 22px;
+    }
+
+    .report-card {
+        width: 100%;
+        max-width: none;
+    }
+
+    .chart-container {
+        max-width: 260px;
+        height: 260px;
+    }
+
+    .popup-content {
+        padding: 30px 25px;
+        margin: 0 15px;
+    }
+
+    .popup-content h3 {
+        font-size: 22px;
+    }
+
+    .popup-content p {
+        font-size: 15px;
     }
 }
