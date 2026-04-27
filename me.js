@@ -1,21 +1,6 @@
 let currentUser = null;
 let currentLeadId = null;
 
-// 🔥 Live Search Filter Function
-function filterTable(tableId, searchInputId) {
-    const searchInput = document.getElementById(searchInputId).value.toLowerCase();
-    const tableRows = document.querySelectorAll(`#${tableId} tr`);
-    
-    tableRows.forEach(row => {
-        const rowText = row.textContent.toLowerCase();
-        if (rowText.includes(searchInput)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-
 window.onload = function () {
     loadUser();
     fetchMEData();
@@ -51,16 +36,13 @@ async function fetchMEData() {
     if (!currentUser || !currentUser.id) return;
 
     try {
-        // Fetch appointments for this ME
         const res = await fetch(`/api/appointments/${currentUser.id}`);
         const data = await res.json();
 
         const container = document.getElementById("appointmentsContainer");
 
         if (!data.success || !data.data || data.data.length === 0) {
-            container.innerHTML = `
-                <p class="no-data">No Appointments Found</p>
-            `;
+            container.innerHTML = `<p class="no-data">No Appointments Found</p>`;
             return;
         }
 
@@ -82,11 +64,11 @@ async function fetchMEData() {
 
         data.data.forEach(item => {
             const isNotInterested = item.lead_status === 'not_interested';
-            const statusText = item.lead_status === 'not_interested' ? 'Not Interested' : 
+            const statusText = item.lead_status === 'not_interested' ? 'Not Interested' :
                              (item.lead_status === 'deal_closed' ? 'Deal Closed' : 'Active');
 
             table += `
-                <tr onclick="openActionModal(${item.id}, '${(item.company_name || '').replace(/'/g, "\\'")}', '${(item.client_name || '').replace(/'/g, "\\'")}')" 
+                <tr onclick="openActionModal(${item.id}, '${(item.company_name || '').replace(/'/g, "\\'")}', '${(item.client_name || '').replace(/'/g, "\\'")}')"
                     class="${isNotInterested ? 'grayed-out' : ''}"
                     style="cursor: pointer;">
                     <td>${item.company_name || '-'}</td>
@@ -105,7 +87,7 @@ async function fetchMEData() {
         });
 
         table += `</tbody></table>`;
-        container.innerHTML = table;
+        container.innerHTML = `<div class="table-wrapper">${table}</div>`;
 
     } catch (err) {
         console.error("Error fetching ME appointments:", err);
@@ -116,16 +98,15 @@ async function fetchMEData() {
 }
 
 function showSection(sectionId) {
-    // Section switch
     if (sectionId === 'reports') {
-    fetchReports();
-}
+        fetchReports();
+    }
+
     document.querySelectorAll('.section').forEach(sec => {
         sec.classList.remove('active');
     });
     document.getElementById(sectionId).classList.add('active');
 
-    // 🔥 Sidebar active fix
     document.querySelectorAll('.sidebar li').forEach(li => {
         li.classList.remove('active');
     });
@@ -138,7 +119,7 @@ function showSection(sectionId) {
     if (sectionId === 'deals') {
         fetchDeals();
     }
-    if (sectionId === 'followups'){
+    if (sectionId === 'followups') {
         fetchFollowups();
     }
 }
@@ -152,7 +133,6 @@ function showPopup(title, message, isSuccess) {
     titleEl.textContent = title;
     msgEl.textContent = message;
 
-    // 🔥 ICON FIX
     if (isSuccess) {
         icon.className = 'fas fa-check-circle';
         icon.style.color = '#22d3ee';
@@ -163,13 +143,11 @@ function showPopup(title, message, isSuccess) {
 
     popup.classList.remove('hidden');
 
-    // 🔥 Auto close after 1.5 sec
     setTimeout(() => {
         popup.classList.add('hidden');
     }, 1500);
 }
 
-// Open Modal Function
 function openActionModal(leadId, company, client) {
     currentLeadId = leadId;
     document.getElementById('modalLeadTitle').textContent = company || client || "Client Action";
@@ -193,15 +171,14 @@ function takeAction(action) {
     document.getElementById('followupForm').classList.add('hidden');
     document.getElementById('dealClosedForm').classList.add('hidden');
     document.getElementById('actionButtons').classList.add('hidden');
+
     if (action === 'not_interested') {
         const formData = new FormData();
         formData.append('action', 'not_interested');
         updateLeadAction(formData);
-    } 
-    else if (action === 'followup') {
+    } else if (action === 'followup') {
         document.getElementById('followupForm').classList.remove('hidden');
-    } 
-    else if (action === 'deal_closed') {
+    } else if (action === 'deal_closed') {
         document.getElementById('dealClosedForm').classList.remove('hidden');
     }
 }
@@ -234,17 +211,15 @@ async function saveDealClosed() {
     formData.append('deal_amount', deal_amount);
     formData.append('payment_method', payment_method);
     formData.append('payment_notes', document.getElementById('paymentNotes').value || '');
-    formData.append('closed_by', currentUser ? currentUser.id : '');   // ← Yeh important hai
+    formData.append('closed_by', currentUser ? currentUser.id : '');
 
-    // Dynamic fields
     const method = payment_method;
 
     if (method === 'Cash') {
         formData.append('received_by', document.getElementById('receivedBy')?.value || currentUser.name);
         const fileInput = document.getElementById('cashPhoto');
         if (fileInput && fileInput.files[0]) formData.append('paymentProof', fileInput.files[0]);
-    } 
-    else if (method === 'Cheque') {
+    } else if (method === 'Cheque') {
         formData.append('cheque_number', document.getElementById('chequeNumber')?.value || '');
         formData.append('cheque_date', document.getElementById('chequeDate')?.value || '');
         formData.append('bank_name', document.getElementById('bankName')?.value || '');
@@ -252,15 +227,13 @@ async function saveDealClosed() {
 
         const fileInput = document.getElementById('chequePhoto');
         if (fileInput && fileInput.files[0]) formData.append('paymentProof', fileInput.files[0]);
-    } 
-    else if (method === 'UPI / Net Banking') {
+    } else if (method === 'UPI / Net Banking') {
         formData.append('transaction_id', document.getElementById('transactionId')?.value || '');
         formData.append('payment_date', document.getElementById('upiDate')?.value || '');
 
         const fileInput = document.getElementById('upiScreenshot');
         if (fileInput && fileInput.files[0]) formData.append('paymentProof', fileInput.files[0]);
-    } 
-    else if (method === 'Debit/Credit Card') {
+    } else if (method === 'Debit/Credit Card') {
         formData.append('transaction_id', document.getElementById('cardTransactionId')?.value || '');
 
         const fileInput = document.getElementById('cardScreenshot');
@@ -270,15 +243,13 @@ async function saveDealClosed() {
     await updateLeadAction(formData);
 }
 
-// Updated updateLeadAction
 async function updateLeadAction(data) {
     try {
         const res = await fetch(`/api/leads/${currentLeadId}/action`, {
             method: 'PUT',
-            body: data   // FormData directly bhej rahe hain
+            body: data
         });
 
-        // Pehle check karo response ok hai ya nahi
         if (!res.ok) {
             const text = await res.text();
             console.error("Server Error Response:", text);
@@ -302,11 +273,10 @@ async function updateLeadAction(data) {
     }
 }
 
-// Payment method change pe dynamic fields dikhana
 function showPaymentFields() {
     const method = document.getElementById('paymentMethod').value;
     const container = document.getElementById('dynamicPaymentFields');
-    container.innerHTML = '';   // pehle clear karo
+    container.innerHTML = '';
 
     let html = '';
 
@@ -319,8 +289,7 @@ function showPaymentFields() {
             <input type="file" id="cashPhoto" accept="image/*" capture="camera" required>
             <small>Take photo of cash receipt / handover proof</small>
         `;
-    } 
-    else if (method === 'Cheque') {
+    } else if (method === 'Cheque') {
         html = `
             <label>Cheque Number <span class="required">*</span></label>
             <input type="text" id="chequeNumber" placeholder="e.g. 12345678" required>
@@ -338,8 +307,7 @@ function showPaymentFields() {
             <input type="file" id="chequePhoto" accept="image/*" capture="camera" required>
             <small>Front side of cheque ki photo lo</small>
         `;
-    } 
-    else if (method === 'UPI / Net Banking') {
+    } else if (method === 'UPI / Net Banking') {
         html = `
             <label>Transaction ID / UTR Number <span class="required">*</span></label>
             <input type="text" id="transactionId" placeholder="UPI Ref No. ya Transaction ID" required>
@@ -353,8 +321,7 @@ function showPaymentFields() {
             <label>Screenshot (Optional)</label>
             <input type="file" id="upiScreenshot" accept="image/*">
         `;
-    } 
-    else if (method === 'Debit/Credit Card') {
+    } else if (method === 'Debit/Credit Card') {
         html = `
             <label>Transaction Reference / Approval Code</label>
             <input type="text" id="cardTransactionId" placeholder="Transaction ID">
@@ -380,87 +347,20 @@ function showPaymentFields() {
 }
 
 async function fetchDeals() {
-  if (!currentUser || !currentUser.id) return;
+    if (!currentUser || !currentUser.id) return;
 
-  try {
-    const res = await fetch(
-      `/api/deals/${currentUser.id}`,
-    );
-    const data = await res.json();
+    try {
+        const res = await fetch(`/api/deals/${currentUser.id}`);
+        const data = await res.json();
 
-    const container = document.getElementById("dealsContainer");
+        const container = document.getElementById("dealsContainer");
 
-    if (!data.success || !data.data || data.data.length === 0) {
-      container.innerHTML = `<p class="no-data">No Deals Found</p>`;
-      return;
-    }
+        if (!data.success || !data.data || data.data.length === 0) {
+            container.innerHTML = `<p class="no-data">No Deals Found</p>`;
+            return;
+        }
 
-    let table = `
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Client</th>
-                        <th>Amount</th>
-                        <th>Payment Method</th>
-                        <th>Closed Date</th>
-                        <th>PFI</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-    data.data.forEach((item) => {
-      table += `
-                <tr>
-                    <td>${item.company_name || "-"}</td>
-                    <td>${item.client_name || "-"}</td>
-                    <td>₹${item.deal_amount || "0"}</td>
-                    <td>${item.payment_method || "-"}</td>
-                    <td>${item.closed_date || "-"}</td>
-                    <td class="invoice-actions">
-                        <button onclick="downloadInvoice(${item.id})" class="btn btn-invoice">
-                            <i class="fas fa-download"></i>
-                        </button>
-
-                        <button onclick="shareWhatsApp(${item.id})" class="btn btn-whatsapp">
-                            <i class="fab fa-whatsapp"></i>
-                        </button>
-
-                        <button onclick="shareGmail(${item.id})" class="btn btn-gmail">
-                            <i class="fas fa-envelope"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-    });
-
-    table += `</tbody></table>`;
-    container.innerHTML = table;
-  } catch (err) {
-    console.error("Deals fetch error:", err);
-    document.getElementById("dealsContainer").innerHTML =
-      `<p class="error">Error loading deals</p>`;
-  }
-}
-
-async function fetchDeals() {
-  if (!currentUser || !currentUser.id) return;
-
-  try {
-    const res = await fetch(
-      `/api/deals/${currentUser.id}`,
-    );
-    const data = await res.json();
-
-    const container = document.getElementById("dealsContainer");
-
-    if (!data.success || !data.data || data.data.length === 0) {
-      container.innerHTML = `<p class="no-data">No Deals Found</p>`;
-      return;
-    }
-
-    let table = `
+        let table = `
             <table class="data-table">
                 <thead>
                     <tr>
@@ -475,8 +375,8 @@ async function fetchDeals() {
                 <tbody>
         `;
 
-    data.data.forEach((item) => {
-      table += `
+        data.data.forEach((item) => {
+            table += `
                 <tr>
                     <td>${item.company_name || "-"}</td>
                     <td>${item.client_name || "-"}</td>
@@ -498,74 +398,67 @@ async function fetchDeals() {
                     </td>
                 </tr>
             `;
-    });
+        });
 
-    table += `</tbody></table>`;
-    container.innerHTML = table;
-  } catch (err) {
-    console.error("Deals fetch error:", err);
-    document.getElementById("dealsContainer").innerHTML =
-      `<p class="error">Error loading deals</p>`;
-  }
+        table += `</tbody></table>`;
+        container.innerHTML = `<div class="table-wrapper">${table}</div>`;
+    } catch (err) {
+        console.error("Deals fetch error:", err);
+        document.getElementById("dealsContainer").innerHTML =
+            `<p class="error">Error loading deals</p>`;
+    }
 }
 
-// ================= DOWNLOAD =================
 function downloadInvoice(id) {
-  window.open(`/api/invoice/${id}`, "_blank");
+    window.open(`/api/invoice/${id}`, "_blank");
 }
 
-// ================= FETCH PDF AS FILE =================
 async function getInvoiceFile(id) {
-  const res = await fetch(`/api/invoice/${id}`);
-  const blob = await res.blob();
+    const res = await fetch(`/api/invoice/${id}`);
+    const blob = await res.blob();
 
-  return new File([blob], `invoice_${id}.pdf`, {
-    type: "application/pdf",
-  });
-}
-
-// ================= WHATSAPP =================
-async function shareWhatsApp(phone, id) {
-  const file = await getInvoiceFile(id);
-
-  if (navigator.share) {
-    await navigator.share({
-      title: "Invoice",
-      text: "Your invoice",
-      files: [file] // 🔥 actual PDF
+    return new File([blob], `invoice_${id}.pdf`, {
+        type: "application/pdf",
     });
-  } else {
-    alert("Sharing not supported on this device");
-  }
 }
 
+async function shareWhatsApp(phone, id) {
+    const file = await getInvoiceFile(id);
 
-// ================= GMAIL =================
+    if (navigator.share) {
+        await navigator.share({
+            title: "Invoice",
+            text: "Your invoice",
+            files: [file]
+        });
+    } else {
+        alert("Sharing not supported on this device");
+    }
+}
+
 function shareGmail(email, id) {
-  if (!email) {
-    alert("Email not available");
-    return;
-  }
+    if (!email) {
+        alert("Email not available");
+        return;
+    }
 
-  const pdfUrl = `/api/invoice/${id}`;
+    const pdfUrl = `/api/invoice/${id}`;
 
-  // 👇 PDF download trigger
-  const link = document.createElement("a");
-  link.href = pdfUrl;
-  link.download = `invoice_${id}.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+    const link = document.createElement("a");
+    link.href = pdfUrl;
+    link.download = `invoice_${id}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-  // 👇 Gmail open
-  setTimeout(() => {
-    const subject = "Invoice PDF";
-    const body = "Hi,\n\nPlease find attached invoice.\n\n(Attach downloaded PDF)";
+    setTimeout(() => {
+        const subject = "Invoice PDF";
+        const body = "Hi,\n\nPlease find attached invoice.\n\n(Attach downloaded PDF)";
 
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    window.open(gmailUrl, "_blank");
-  }, 800);
+        window.open(gmailUrl, "_blank");
+    }, 800);
 }
 
 function logout() {
@@ -576,6 +469,7 @@ function logout() {
         window.location.replace("mp.html");
     }, 1500);
 }
+
 let reportChart = null;
 
 async function fetchFollowups() {
@@ -621,7 +515,7 @@ async function fetchFollowups() {
         });
 
         table += `</tbody></table>`;
-        container.innerHTML = table;
+        container.innerHTML = `<div class="table-wrapper">${table}</div>`;
 
     } catch (err) {
         console.error("Followups fetch error:", err);
@@ -634,7 +528,6 @@ async function fetchReports() {
     if (!currentUser || !currentUser.id) return;
 
     try {
-        // 🔥 3 APIs call kar
         const resApp = await fetch(`/api/appointments/${currentUser.id}`);
         const dataApp = await resApp.json();
 
@@ -644,12 +537,10 @@ async function fetchReports() {
         const resDeals = await fetch(`/api/deals/${currentUser.id}`);
         const dataDeals = await resDeals.json();
 
-        // ✅ Correct counts
         const appointmentsCount = dataApp.success ? dataApp.data.length : 0;
         const followupsCount = dataFollow.success ? dataFollow.data.length : 0;
         const dealsCount = dataDeals.success ? dataDeals.data.length : 0;
 
-        // ✅ UI update
         document.getElementById("totalAppointments").textContent = appointmentsCount;
         document.getElementById("totalFollowups").textContent = followupsCount;
         document.getElementById("totalDeals").textContent = dealsCount;
@@ -688,6 +579,3 @@ async function fetchReports() {
     }
 }
 
-function downloadInvoice(leadId) {
-    window.open(`/api/invoice/${leadId}`, '_blank');
-}
